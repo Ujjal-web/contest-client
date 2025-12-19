@@ -55,28 +55,43 @@ const AuthProvider = ({ children }) => {
 
     // 6. Monitor Auth State & Handle JWT
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, currentUser => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
 
             if (currentUser) {
-                // User is logged in: Get JWT Token
-                const userInfo = { email: currentUser.email };
-                axiosPublic.post('/jwt', userInfo)
-                    .then(res => {
-                        if (res.data.token) {
-                            localStorage.setItem('access-token', res.data.token);
-                            setLoading(false);
-                        }
-                    })
+                try {
+                    // 1) Get JWT
+                    const userInfoForJwt = { email: currentUser.email };
+                    const jwtRes = await axiosPublic.post("/jwt", userInfoForJwt);
+
+                    if (jwtRes.data.token) {
+                        localStorage.setItem("access-token", jwtRes.data.token);
+                    }
+
+                    // 2) Ensure user exists in MongoDB
+                    const userForDb = {
+                        name: currentUser.displayName || "User",
+                        email: currentUser.email,
+                        photoURL: currentUser.photoURL || "",
+                        role: "user",
+                    };
+
+                    await axiosPublic.post("/users", userForDb);
+                } catch (error) {
+                    console.error("Auth state sync error:", error);
+                } finally {
+                    setLoading(false);
+                }
             } else {
-                // User is logged out: Remove Token
-                localStorage.removeItem('access-token');
+                // User logged out
+                localStorage.removeItem("access-token");
                 setLoading(false);
             }
         });
+
         return () => {
-            return unsubscribe();
-        }
+            unsubscribe();
+        };
     }, [axiosPublic]);
 
     const authInfo = {
