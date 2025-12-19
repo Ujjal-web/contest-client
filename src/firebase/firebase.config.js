@@ -5,7 +5,7 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyA70inkItgaRCqCR5-K2ON0SIKySnouqxw",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: "contest-hub-a11.firebaseapp.com",
     projectId: "contest-hub-a11",
     storageBucket: "contest-hub-a11.firebasestorage.app",
@@ -14,4 +14,4 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);

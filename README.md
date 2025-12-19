@@ -1,16 +1,31 @@
-# React + Vite
+# ContestForge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ContestForge is a modern contest management platform where creators host creative competitions and users join, submit their best work, and celebrate wins.
 
-Currently, two official plugins are available:
+## Live Links
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Client: 
+- Server: 
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Fully responsive UI for mobile, tablet, and desktop (including dashboards).
+- Role-based access with three roles: Admin, Contest Creator, and Normal User.
+- Secure authentication with Firebase (Email/Password + Google) and JWT-protected APIs.
+- Users can browse all approved contests, filter by category, and search by contest type.
+- Contest registration with a payment flow; participant count updates after successful payment.
+- Private contest details page with live deadline countdown and task submission modal.
+- Creator dashboard to add contests, edit/delete pending ones, view submissions, and declare winners.
+- Admin dashboard to manage users, change roles, and approve/reject/delete contests.
+- Personalized user dashboard showing participated contests, winnings, and a win-percentage chart.
+- Dynamic leaderboard page ranking users by the number of contests they have won.
+- Dark/Light theme toggle with persisted preference via localStorage.
+- Toast/SweetAlert notifications for login, registration, payments, and all CRUD actions.
+- All forms use react-hook-form and all data fetching is powered by TanStack Query.
+- 404 Not Found page with a friendly message and a button to go back home.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend:** React, React Router, Tailwind CSS, DaisyUI, TanStack Query, React Hook Form, Firebase Auth, Axios, SweetAlert2
+- **Backend:** Node.js, Express, MongoDB, Mongoose, JWT
+- **Others:** Stripe (test mode) for payments, Framer Motion/AOS for animations
