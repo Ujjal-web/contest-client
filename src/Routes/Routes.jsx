@@ -25,6 +25,7 @@ import ManageContests from "../pages/Dashboard/Admin/ManageContests";
 import ErrorPage from "../pages/ErrorPage";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import AllContests from "../pages/AllContests/AllContests";
+import ContestDetails from "../pages/ContestDetails/ContestDetails";
 
 
 
@@ -40,9 +41,19 @@ const router = createBrowserRouter([
             { path: "/all-contests", element: <AllContests /> },
             { path: "/login", element: <Login /> },
             { path: "/register", element: <Register /> },
+
+            {
+                path: "/contests/:contestId",
+                element: (
+                    <PrivateRoute>
+                        <ContestDetails />
+                    </PrivateRoute>
+                ),
+            },
             // TODO: add AllContests, Leaderboard, About, HowItWorks, etc.
         ],
     },
+
     {
         path: "/dashboard",
         element: (
