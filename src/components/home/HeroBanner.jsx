@@ -14,7 +14,7 @@ const HeroBanner = () => {
     };
 
     return (
-        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary/15 via-secondary/10 to-accent/15 border border-base-300 px-6 py-10 md:px-12 lg:py-16">
+        <section className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary/15 via-secondary/10 to-accent/15 border border-base-300 px-6 py-10 md:px-12 lg:py-16">
             {/* Background circles */}
             <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
             <div className="pointer-events-none absolute -right-10 bottom-0 h-48 w-48 rounded-full bg-secondary/10 blur-3xl" />
