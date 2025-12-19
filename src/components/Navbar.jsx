@@ -137,7 +137,7 @@ const Navbar = () => {
                                         alt={user?.displayName || "User"}
                                         className="w-8 h-8 rounded-full object-cover border border-base-300"
                                     />
-                                    <span className="max-w-[100px] truncate text-xs">
+                                    <span className="max-w-25 truncate text-xs">
                                         {user?.displayName || "User"}
                                     </span>
                                 </label>
@@ -228,7 +228,7 @@ const Navbar = () => {
                                             <span className="text-sm font-medium">
                                                 {user?.displayName || "User"}
                                             </span>
-                                            <span className="text-xs text-base-content/70 truncate max-w-[160px]">
+                                            <span className="text-xs text-base-content/70 truncate max-w-40">
                                                 {user?.email}
                                             </span>
                                         </div>
