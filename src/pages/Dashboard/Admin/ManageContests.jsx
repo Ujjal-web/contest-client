@@ -151,7 +151,7 @@ const ManageContests = () => {
                 <h2 className="text-xl md:text-2xl font-bold text-base-content">
                     Manage contests
                 </h2>
-                <div className="min-h-[200px] flex items-center justify-center">
+                <div className="min-h-50 flex items-center justify-center">
                     <span className="loading loading-spinner loading-lg text-primary" />
                 </div>
             </section>
