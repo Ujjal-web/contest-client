@@ -24,6 +24,7 @@ import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageContests from "../pages/Dashboard/Admin/ManageContests";
 import ErrorPage from "../pages/ErrorPage";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import AllContests from "../pages/AllContests/AllContests";
 
 
 
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             { path: "/", element: <Home /> },
+            { path: "/all-contests", element: <AllContests /> },
             { path: "/login", element: <Login /> },
             { path: "/register", element: <Register /> },
             // TODO: add AllContests, Leaderboard, About, HowItWorks, etc.

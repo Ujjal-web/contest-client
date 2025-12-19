@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUserRole from "../../../hooks/useUserRole";
+import ContestRow from "../../../components/dashboard/ContestRow";
 
 const ITEMS_PER_PAGE = 10;
 

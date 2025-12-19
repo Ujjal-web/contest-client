@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
+import ContestCard from "../../components/contests/ContestCard"; // NEW
 
 const PopularContestsSection = () => {
     const axiosPublic = useAxiosPublic();
@@ -76,63 +77,6 @@ const PopularContestsSection = () => {
                 </div>
             )}
         </section>
-    );
-};
-
-const ContestCard = ({ contest }) => {
-    const { _id, title, image, description, participantsCount, type, prizeMoney } =
-        contest || {};
-
-    return (
-        <div className="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition duration-200 rounded-2xl overflow-hidden flex flex-col">
-            {image && (
-                <figure className="h-40 overflow-hidden">
-                    <img
-                        src={image}
-                        alt={title}
-                        className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                </figure>
-            )}
-            <div className="card-body flex-1 space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                    <span className="badge badge-outline badge-sm capitalize">
-                        {type || "Open"}
-                    </span>
-                    {typeof prizeMoney === "number" && (
-                        <span className="badge badge-primary badge-sm">
-                            Prize ${prizeMoney}
-                        </span>
-                    )}
-                </div>
-
-                <h3 className="card-title text-base md:text-lg">{title}</h3>
-
-                {description && (
-                    <p className="text-xs md:text-sm text-base-content/70">
-                        {description.length > 110
-                            ? `${description.slice(0, 110)}…`
-                            : description}
-                    </p>
-                )}
-
-                <div className="flex items-center justify-between text-xs text-base-content/70 pt-2">
-                    <span>
-                        Participants:{" "}
-                        <span className="font-semibold">{participantsCount ?? 0}</span>
-                    </span>
-                </div>
-
-                <div className="card-actions justify-end pt-2">
-                    <Link
-                        to={`/contests/${_id}`}
-                        className="btn btn-sm btn-primary normal-case"
-                    >
-                        View details
-                    </Link>
-                </div>
-            </div>
-        </div>
     );
 };
 
