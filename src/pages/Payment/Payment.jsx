@@ -15,10 +15,8 @@ const Payment = () => {
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
-
     const [clientSecret, setClientSecret] = useState("");
 
-    // Load contest
     const {
         data: contest,
         isLoading,
@@ -54,7 +52,6 @@ const Payment = () => {
                     contestId: contest._id,
                 });
                 setClientSecret(res.data.clientSecret);
-                // console.log("ClientSecret:", res.data.clientSecret);
             } catch (error) {
                 console.error(error);
                 Swal.fire({
@@ -65,9 +62,7 @@ const Payment = () => {
             }
         };
 
-        if (contest) {
-            createIntent();
-        }
+        if (contest) createIntent();
     }, [axiosSecure, contest, navigate]);
 
     if (isLoading) {
@@ -108,49 +103,62 @@ const Payment = () => {
         );
     }
 
+    const appearance = {
+        theme: "stripe",
+    };
+
+    const options = {
+        clientSecret,
+        appearance,
+    };
+
     return (
-        <section className="space-y-4 max-w-2xl mx-auto">
+        <section className="space-y-6 max-w-4xl mx-auto">
             <h2 className="text-xl md:text-2xl font-bold text-base-content">
-                Register for contest
+                Checkout
             </h2>
-            <p className="text-sm text-base-content/70">
-                You are about to register for{" "}
-                <span className="font-semibold">
-                    {contest.name || contest.title}
-                </span>
-                . After a successful payment, you will be able to submit your task from
-                the contest page.
-            </p>
 
-            <div className="rounded-2xl bg-base-100 border border-base-300 p-4 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-base-content">
-                        Entry fee
-                    </span>
-                    <span className="font-semibold text-base-content">
-                        ${contest.price?.toFixed(2)}
-                    </span>
-                </div>
-                {deadlineDate && (
-                    <p className="text-xs text-base-content/60">
-                        Deadline: {deadlineDate.toLocaleString()}
+            <div className="grid gap-6 md:grid-cols-2">
+                {/* Left: summary */}
+                <div className="rounded-3xl bg-base-100 border border-base-300 p-5 space-y-3">
+                    <p className="text-xs uppercase tracking-wide text-base-content/60">
+                        Contest
                     </p>
-                )}
-            </div>
-
-            <div className="rounded-2xl bg-base-100 border border-base-300 p-4">
-                {clientSecret ? (
-                    <Elements
-                        stripe={stripePromise}
-                        options={{ clientSecret, appearance: { theme: "stripe" } }}
-                    >
-                        <CheckoutForm contest={contest} clientSecret={clientSecret} />
-                    </Elements>
-                ) : (
+                    <h3 className="text-lg font-semibold text-base-content">
+                        {contest.name || contest.title}
+                    </h3>
                     <p className="text-sm text-base-content/70">
-                        Preparing secure payment form…
+                        You are registering for this contest. After payment you can submit
+                        your task from the contest details page.
                     </p>
-                )}
+
+                    <div className="mt-4 border-t border-base-300 pt-3">
+                        <p className="text-xs text-base-content/60 mb-1">
+                            Amount to pay
+                        </p>
+                        <p className="text-3xl font-bold text-base-content">
+                            ${contest.price?.toFixed(2)}
+                        </p>
+                        {deadlineDate && (
+                            <p className="text-xs text-base-content/60 mt-1">
+                                Deadline: {deadlineDate.toLocaleString()}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Right: Stripe Payment Element */}
+                <div className="rounded-3xl bg-base-100 border border-base-300 p-5">
+                    {clientSecret ? (
+                        <Elements stripe={stripePromise} options={options}>
+                            <CheckoutForm contest={contest} />
+                        </Elements>
+                    ) : (
+                        <p className="text-sm text-base-content/70">
+                            Preparing secure payment form…
+                        </p>
+                    )}
+                </div>
             </div>
         </section>
     );

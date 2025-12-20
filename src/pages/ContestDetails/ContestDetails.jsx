@@ -1,6 +1,8 @@
+// src/pages/ContestDetails/ContestDetails.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -8,6 +10,7 @@ import useAuth from "../../hooks/useAuth";
 
 const ContestDetails = () => {
     const { contestId } = useParams();
+    const navigate = useNavigate();
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth() || {};
@@ -17,7 +20,6 @@ const ContestDetails = () => {
         data: contest,
         isLoading: contestLoading,
         isError: contestError,
-        refetch: refetchContest,
     } = useQuery({
         queryKey: ["contest-details", contestId],
         enabled: !!contestId,
@@ -32,7 +34,6 @@ const ContestDetails = () => {
         data: registration,
         isLoading: regLoading,
         isError: regError,
-        refetch: refetchRegistration,
     } = useQuery({
         queryKey: ["contest-registration", contestId],
         enabled: !!contestId && !!user,
@@ -46,6 +47,7 @@ const ContestDetails = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [remaining, setRemaining] = useState(null);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
 
     // Countdown
     useEffect(() => {
@@ -70,7 +72,7 @@ const ContestDetails = () => {
 
     if (contestLoading || regLoading) {
         return (
-            <section className="min-h-50 flex items-center justify-center">
+            <section className="min-h-[200px] flex items-center justify-center">
                 <span className="loading loading-spinner loading-lg text-primary" />
             </section>
         );
@@ -110,14 +112,13 @@ const ContestDetails = () => {
 
     const displayName = name || title || "Contest";
     const participants = participantsCount ?? participationCount ?? 0;
-    const isRegistered = registration?.registered;
+    const isRegistered = registration?.registered && !regError;
     const deadlineDate = deadline ? new Date(deadline) : null;
     const isEnded =
         deadlineDate && deadlineDate.getTime() <= new Date().getTime();
 
     const handleGoToPayment = () => {
-        // navigate to a separate payment page
-        window.location.href = `/payment/${_id}`;
+        navigate(`/payment/${_id}`);
     };
 
     const handleSubmitTask = async (content) => {
@@ -140,6 +141,7 @@ const ContestDetails = () => {
                     showConfirmButton: false,
                 });
                 setIsModalOpen(false);
+                setHasSubmitted(true);
             } else {
                 Swal.fire({
                     icon: "info",
@@ -324,10 +326,11 @@ const ContestDetails = () => {
                         <button
                             type="button"
                             onClick={() => setIsModalOpen(true)}
-                            disabled={!isRegistered || isEnded}
-                            className="btn btn-outline btn-sm w-full"
+                            disabled={!isRegistered || isEnded || hasSubmitted}
+                            className={`btn btn-sm w-full ${hasSubmitted ? "btn-success btn-outline" : "btn-outline"
+                                }`}
                         >
-                            Submit task
+                            {hasSubmitted ? "Task submitted" : "Submit task"}
                         </button>
 
                         {!isRegistered && (
@@ -338,6 +341,12 @@ const ContestDetails = () => {
                         {isEnded && (
                             <p className="text-[11px] text-error mt-1">
                                 Task submission is closed because the contest has ended.
+                            </p>
+                        )}
+                        {hasSubmitted && !isEnded && (
+                            <p className="text-[11px] text-success mt-1">
+                                Your task has been submitted. You cannot submit again for this
+                                contest.
                             </p>
                         )}
                     </div>
@@ -379,8 +388,6 @@ const CountdownDisplay = ({ ms }) => {
 
 /* ---------- Submit Task Modal ---------- */
 
-import { useForm } from "react-hook-form";
-
 const SubmitTaskModal = ({ onClose, onSubmit }) => {
     const {
         register,
@@ -403,7 +410,7 @@ const SubmitTaskModal = ({ onClose, onSubmit }) => {
                             Submit your task
                         </h3>
                         <p className="text-[11px] text-base-content/60">
-                            Share links or text that represent your work for this contest.
+                            Paste links or notes for your work and send it to the creator.
                         </p>
                     </div>
                     <button
@@ -423,19 +430,20 @@ const SubmitTaskModal = ({ onClose, onSubmit }) => {
                             <span className="label-text text-sm leading-tight">
                                 <span className="block">Submission details</span>
                                 <span className="block text-xs text-base-content/60">
-                                    Paste any URLs, descriptions, or notes for your entry.
+                                    Provide URLs and any explanation needed for your entry.
                                 </span>
                             </span>
                         </label>
                         <textarea
                             rows={6}
                             className="textarea textarea-bordered w-full text-sm"
-                            placeholder="Example: Link to your design, article, or demo, plus any important notes..."
+                            placeholder="Example: Link to your design, article, or demo, plus important notes..."
                             {...register("content", {
                                 required: "Submission content is required",
                                 minLength: {
                                     value: 10,
-                                    message: "Please provide at least a few words or a URL.",
+                                    message:
+                                        "Please provide at least a few words or a valid URL.",
                                 },
                             })}
                         />
@@ -460,7 +468,7 @@ const SubmitTaskModal = ({ onClose, onSubmit }) => {
                             disabled={isSubmitting}
                         >
                             {isSubmitting ? (
-                                <span className="loading loading-spinner loading-sm"></span>
+                                <span className="loading loading-spinner loading-sm" />
                             ) : (
                                 "Submit task"
                             )}

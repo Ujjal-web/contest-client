@@ -1,59 +1,49 @@
 import { useState } from "react";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import {
+    useStripe,
+    useElements,
+    PaymentElement,
+} from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
-const cardElementStyle = {
-    style: {
-        base: {
-            fontSize: "14px",
-            color: "#111827",
-            "::placeholder": { color: "#9ca3af" },
-        },
-        invalid: { color: "#ef4444" },
-    },
-};
-
-const CheckoutForm = ({ contest, clientSecret }) => {
+const CheckoutForm = ({ contest }) => {
     const stripe = useStripe();
     const elements = useElements();
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
 
-    const [cardError, setCardError] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [processing, setProcessing] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setCardError("");
+        setErrorMessage("");
 
-        if (!stripe || !elements || !clientSecret) {
-            setCardError("Payment is not ready yet. Please wait a moment.");
+        if (!stripe || !elements) {
+            setErrorMessage("Payment is not ready yet. Please wait a moment.");
             return;
         }
-
-        const card = elements.getElement(CardElement);
-        if (!card) return;
 
         setProcessing(true);
 
         try {
-            const { error, paymentIntent } = await stripe.confirmCardPayment(
-                clientSecret,
-                {
-                    payment_method: { card },
-                }
-            );
+            const { error, paymentIntent } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    // return_url: window.location.origin, // not needed if using redirect: 'if_required'
+                },
+                redirect: "if_required",
+            });
 
             if (error) {
-                console.error(error);
-                setCardError(error.message || "Payment failed");
+                setErrorMessage(error.message || "Payment failed");
                 setProcessing(false);
                 return;
             }
 
-            if (paymentIntent.status === "succeeded") {
+            if (paymentIntent && paymentIntent.status === "succeeded") {
                 const paymentInfo = {
                     contestId: contest._id,
                     amount: contest.price,
@@ -85,36 +75,23 @@ const CheckoutForm = ({ contest, clientSecret }) => {
             setProcessing(false);
         } catch (err) {
             console.error(err);
-            setCardError("Something went wrong. Please try again.");
+            setErrorMessage("Something went wrong. Please try again.");
             setProcessing(false);
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="form-control">
-                <label className="label">
-                    <span className="label-text text-sm leading-tight">
-                        <span className="block">Card details</span>
-                        <span className="block text-xs text-base-content/60">
-                            Use Stripe test card 4242 4242 4242 4242 · Any future date · Any
-                            CVC.
-                        </span>
-                    </span>
-                </label>
-                <div className="border border-base-300 rounded-lg px-3 py-2 bg-base-100">
-                    <CardElement options={cardElementStyle} />
-                </div>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+            <PaymentElement />
 
-            {cardError && (
-                <p className="text-xs text-error mt-1">{cardError}</p>
+            {errorMessage && (
+                <p className="text-xs text-error mt-1">{errorMessage}</p>
             )}
 
             <button
                 type="submit"
-                className="btn btn-primary btn-sm mt-2 w-full"
-                disabled={!stripe || processing || !clientSecret}
+                disabled={!stripe || processing}
+                className="btn btn-primary btn-sm w-full mt-1"
             >
                 {processing ? (
                     <span className="loading loading-spinner loading-sm" />
@@ -122,6 +99,10 @@ const CheckoutForm = ({ contest, clientSecret }) => {
                     `Pay $${contest.price?.toFixed(2)}`
                 )}
             </button>
+
+            <p className="text-[11px] text-base-content/60 mt-1">
+                Testing: use card 4242 4242 4242 4242 · Any future date · Any CVC.
+            </p>
         </form>
     );
 };
