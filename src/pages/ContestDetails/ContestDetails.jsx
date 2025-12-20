@@ -1,4 +1,3 @@
-// src/pages/ContestDetails/ContestDetails.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -72,7 +71,7 @@ const ContestDetails = () => {
 
     if (contestLoading || regLoading) {
         return (
-            <section className="min-h-[200px] flex items-center justify-center">
+            <section className="min-h-50 flex items-center justify-center">
                 <span className="loading loading-spinner loading-lg text-primary" />
             </section>
         );

@@ -5,6 +5,12 @@ import PrivateRoute from "./PrivateRoute";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
+import ErrorPage from "../pages/ErrorPage";
+import Dashboard from "../pages/Dashboard/Dashboard";
+import AllContests from "../pages/AllContests/AllContests";
+import ContestDetails from "../pages/ContestDetails/ContestDetails";
+import Payment from "../pages/Payment/Payment";
+import Leaderboard from "../pages/Leaderboard/Leaderboard";
 
 
 // User dashboard pages
@@ -22,11 +28,9 @@ import EditContest from "../pages/Dashboard/Creator/EditContest";
 // Admin dashboard pages
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageContests from "../pages/Dashboard/Admin/ManageContests";
-import ErrorPage from "../pages/ErrorPage";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import AllContests from "../pages/AllContests/AllContests";
-import ContestDetails from "../pages/ContestDetails/ContestDetails";
-import Payment from "../pages/Payment/Payment";
+import About from "../pages/About/About";
+import HowItWorks from "../pages/HowItWorks/HowItWorks";
+
 
 
 
@@ -40,6 +44,9 @@ const router = createBrowserRouter([
         children: [
             { path: "/", element: <Home /> },
             { path: "/all-contests", element: <AllContests /> },
+            { path: "/leaderboard", element: <Leaderboard /> },
+            { path: "/about", element: <About /> },
+            { path: "/how-it-works", element: <HowItWorks /> },
             { path: "/login", element: <Login /> },
             { path: "/register", element: <Register /> },
 
@@ -59,7 +66,6 @@ const router = createBrowserRouter([
                     </PrivateRoute>
                 ),
             },
-            // TODO: add AllContests, Leaderboard, About, HowItWorks, etc.
         ],
     },
 

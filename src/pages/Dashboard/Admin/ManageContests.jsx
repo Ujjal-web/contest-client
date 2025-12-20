@@ -1,4 +1,3 @@
-// src/pages/Dashboard/Admin/ManageContests.jsx
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";

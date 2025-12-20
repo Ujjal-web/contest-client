@@ -1,4 +1,3 @@
-// src/pages/Register/Register.jsx
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";

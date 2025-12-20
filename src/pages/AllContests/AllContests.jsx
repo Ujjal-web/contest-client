@@ -1,4 +1,3 @@
-// src/pages/AllContests/AllContests.jsx
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -16,31 +15,41 @@ const CONTEST_TYPES = [
     "Other",
 ];
 
+const ITEMS_PER_PAGE = 9;
+
 const AllContests = () => {
     const axiosPublic = useAxiosPublic();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const initialSearch = searchParams.get("search") || "";
     const initialType = searchParams.get("type") || "All";
+    const initialPage = parseInt(searchParams.get("page") || "1", 10);
 
     const [searchTerm, setSearchTerm] = useState(initialSearch);
     const [activeType, setActiveType] = useState(initialType);
+    const [page, setPage] = useState(initialPage);
 
     const {
-        data: contests = [],
+        data,
         isLoading,
         isError,
     } = useQuery({
-        queryKey: ["all-contests", searchTerm, activeType],
+        queryKey: ["all-contests", searchTerm, activeType, page],
         queryFn: async () => {
             const params = new URLSearchParams();
             if (searchTerm) params.append("search", searchTerm);
             if (activeType !== "All") params.append("type", activeType);
+            params.append("page", page);
+            params.append("limit", ITEMS_PER_PAGE);
 
             const res = await axiosPublic.get(`/contests?${params.toString()}`);
-            return res.data;
+            return res.data; // { contests, total, page, totalPages }
         },
     });
+
+    const contests = data?.contests || [];
+    const total = data?.total || 0;
+    const totalPages = data?.totalPages || 1;
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
@@ -48,6 +57,8 @@ const AllContests = () => {
         const params = new URLSearchParams();
         if (trimmed) params.set("search", trimmed);
         if (activeType && activeType !== "All") params.set("type", activeType);
+        params.set("page", "1");
+        setPage(1);
         setSearchParams(params);
     };
 
@@ -56,6 +67,18 @@ const AllContests = () => {
         const params = new URLSearchParams();
         if (searchTerm.trim()) params.set("search", searchTerm.trim());
         if (type !== "All") params.set("type", type);
+        params.set("page", "1");
+        setPage(1);
+        setSearchParams(params);
+    };
+
+    const handleChangePage = (newPage) => {
+        if (newPage < 1 || newPage > totalPages) return;
+        setPage(newPage);
+        const params = new URLSearchParams();
+        if (searchTerm.trim()) params.set("search", searchTerm.trim());
+        if (activeType !== "All") params.set("type", activeType);
+        params.set("page", String(newPage));
         setSearchParams(params);
     };
 
@@ -113,7 +136,7 @@ const AllContests = () => {
             {/* Content */}
             {isLoading && (
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {Array.from({ length: 6 }).map((_, idx) => (
+                    {Array.from({ length: ITEMS_PER_PAGE }).map((_, idx) => (
                         <div
                             key={idx}
                             className="animate-pulse rounded-2xl bg-base-100 border border-base-300 p-4 space-y-3"
@@ -145,11 +168,55 @@ const AllContests = () => {
             )}
 
             {!isLoading && !isError && contests.length > 0 && (
-                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                    {contests.map((contest) => (
-                        <ContestCard key={contest._id} contest={contest} />
-                    ))}
-                </div>
+                <>
+                    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                        {contests.map((contest) => (
+                            <ContestCard key={contest._id} contest={contest} />
+                        ))}
+                    </div>
+
+                    {/* Pagination */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mt-4">
+                        <p className="text-xs text-base-content/60">
+                            Showing{" "}
+                            <span className="font-semibold">
+                                {total === 0 ? 0 : (page - 1) * ITEMS_PER_PAGE + 1}
+                            </span>{" "}
+                            to{" "}
+                            <span className="font-semibold">
+                                {Math.min(page * ITEMS_PER_PAGE, total)}
+                            </span>{" "}
+                            of <span className="font-semibold">{total}</span> contests
+                        </p>
+
+                        <div className="join">
+                            <button
+                                className="join-item btn btn-xs"
+                                onClick={() => handleChangePage(page - 1)}
+                                disabled={page === 1}
+                            >
+                                «
+                            </button>
+                            {Array.from({ length: totalPages }).map((_, idx) => (
+                                <button
+                                    key={idx}
+                                    className={`join-item btn btn-xs ${page === idx + 1 ? "btn-primary" : "btn-ghost"
+                                        }`}
+                                    onClick={() => handleChangePage(idx + 1)}
+                                >
+                                    {idx + 1}
+                                </button>
+                            ))}
+                            <button
+                                className="join-item btn btn-xs"
+                                onClick={() => handleChangePage(page + 1)}
+                                disabled={page === totalPages}
+                            >
+                                »
+                            </button>
+                        </div>
+                    </div>
+                </>
             )}
         </section>
     );
