@@ -1,4 +1,3 @@
-// src/components/home/WinnerSpotlightSection.jsx
 const WinnerSpotlightSection = () => {
     const winners = [
         {

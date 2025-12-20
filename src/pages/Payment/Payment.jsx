@@ -17,6 +17,7 @@ const Payment = () => {
     const navigate = useNavigate();
     const [clientSecret, setClientSecret] = useState("");
 
+    // 1. Load contest details
     const {
         data: contest,
         isLoading,
@@ -30,6 +31,7 @@ const Payment = () => {
         },
     });
 
+    // 2. Create PaymentIntent when contest is loaded
     useEffect(() => {
         const createIntent = async () => {
             if (!contest?._id || typeof contest.price !== "number") return;
@@ -103,14 +105,8 @@ const Payment = () => {
         );
     }
 
-    const appearance = {
-        theme: "stripe",
-    };
-
-    const options = {
-        clientSecret,
-        appearance,
-    };
+    const appearance = { theme: "stripe" };
+    const options = { clientSecret, appearance };
 
     return (
         <section className="space-y-6 max-w-4xl mx-auto">

@@ -38,7 +38,7 @@ const Leaderboard = () => {
     }
 
     return (
-        <section className="space-y-6">
+        <section className="space-y-8" data-aos="fade-up">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
                 <div>
                     <h2 className="text-2xl md:text-3xl font-bold text-base-content">

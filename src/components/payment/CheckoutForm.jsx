@@ -1,10 +1,7 @@
 import { useState } from "react";
-import {
-    useStripe,
-    useElements,
-    PaymentElement,
-} from "@stripe/react-stripe-js";
+import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 
@@ -17,8 +14,10 @@ const CheckoutForm = ({ contest }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [processing, setProcessing] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    // react-hook-form
+    const { handleSubmit } = useForm();
+
+    const onSubmit = async () => {
         setErrorMessage("");
 
         if (!stripe || !elements) {
@@ -32,7 +31,7 @@ const CheckoutForm = ({ contest }) => {
             const { error, paymentIntent } = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
-                    // return_url: window.location.origin, // not needed if using redirect: 'if_required'
+
                 },
                 redirect: "if_required",
             });
@@ -81,7 +80,7 @@ const CheckoutForm = ({ contest }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-sm">
             <PaymentElement />
 
             {errorMessage && (

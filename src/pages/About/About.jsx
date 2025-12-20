@@ -1,6 +1,6 @@
 const About = () => {
     return (
-        <section className="space-y-8">
+        <section className="space-y-8" data-aos="fade-up">
             {/* Hero */}
             <div className="rounded-3xl bg-base-100 border border-base-300 p-6 md:p-8 shadow-sm">
                 <h1 className="text-2xl md:text-3xl font-bold text-base-content mb-2">

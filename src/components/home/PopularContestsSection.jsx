@@ -1,8 +1,7 @@
-// src/components/home/PopularContestsSection.jsx
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import ContestCard from "../../components/contests/ContestCard"; // NEW
+import ContestCard from "../../components/contests/ContestCard";
 
 const PopularContestsSection = () => {
     const axiosPublic = useAxiosPublic();
@@ -20,7 +19,7 @@ const PopularContestsSection = () => {
     });
 
     return (
-        <section className="space-y-6">
+        <section className="space-y-6" data-aos="fade-up" data-aos-offset="120">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
                 <div>
                     <h2 className="text-2xl md:text-3xl font-bold text-base-content">
@@ -71,8 +70,14 @@ const PopularContestsSection = () => {
 
             {!isLoading && !isError && contests.length > 0 && (
                 <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-                    {contests.map((contest) => (
-                        <ContestCard key={contest._id} contest={contest} />
+                    {contests.map((contest, idx) => (
+                        <div
+                            key={contest._id}
+                            data-aos="zoom-in"
+                            data-aos-delay={idx * 60}
+                        >
+                            <ContestCard contest={contest} />
+                        </div>
                     ))}
                 </div>
             )}

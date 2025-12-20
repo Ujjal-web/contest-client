@@ -1,4 +1,3 @@
-// src/components/home/WhyContestHubSection.jsx
 const WhyContestHubSection = () => {
     const items = [
         {

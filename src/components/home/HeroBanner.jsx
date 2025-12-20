@@ -1,27 +1,39 @@
-// src/components/home/HeroBanner.jsx
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const HeroBanner = () => {
-    const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        const value = searchTerm.trim();
+    // react-hook-form setup
+    const { register, handleSubmit } = useForm({
+        defaultValues: {
+            search: "",
+        },
+    });
+
+    const onSearchSubmit = (data) => {
+        const value = (data.search || "").trim();
         if (!value) return;
         navigate(`/all-contests?search=${encodeURIComponent(value)}`);
     };
 
     return (
-        <section className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary/15 via-secondary/10 to-accent/15 border border-base-300 px-6 py-10 md:px-12 lg:py-16">
+        <section
+            className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary/15 via-secondary/10 to-accent/15 border border-base-300 px-6 py-10 md:px-12 lg:py-16"
+            data-aos="fade-up"
+            data-aos-delay="50"
+        >
             {/* Background circles */}
             <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
             <div className="pointer-events-none absolute -right-10 bottom-0 h-48 w-48 rounded-full bg-secondary/10 blur-3xl" />
 
             <div className="relative grid gap-10 md:grid-cols-2 items-center">
                 {/* Left content */}
-                <div className="space-y-5">
+                <div
+                    className="space-y-5"
+                    data-aos="fade-right"
+                    data-aos-delay="100"
+                >
                     <p className="inline-flex items-center gap-2 rounded-full bg-base-100/80 px-3 py-1 text-xs font-medium text-primary border border-primary/20">
                         Elevate your skills · Win real prizes · Build your portfolio
                     </p>
@@ -40,15 +52,16 @@ const HeroBanner = () => {
 
                     {/* Search bar */}
                     <form
-                        onSubmit={handleSearch}
+                        onSubmit={handleSubmit(onSearchSubmit)}
                         className="mt-4 flex flex-col sm:flex-row gap-3"
+                        data-aos="fade-up"
+                        data-aos-delay="150"
                     >
                         <input
                             type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="input input-bordered w-full sm:flex-1"
                             placeholder="Search by contest type (e.g. logo design, article writing)"
+                            {...register("search")}
                         />
                         <button
                             type="submit"
@@ -59,7 +72,11 @@ const HeroBanner = () => {
                     </form>
 
                     {/* Quick stats */}
-                    <div className="mt-6 grid grid-cols-3 gap-3 max-w-xs text-xs text-base-content/80">
+                    <div
+                        className="mt-6 grid grid-cols-3 gap-3 max-w-xs text-xs text-base-content/80"
+                        data-aos="fade-up"
+                        data-aos-delay="200"
+                    >
                         <div>
                             <p className="font-bold text-base-content">120+</p>
                             <p>Active contests</p>
@@ -76,7 +93,11 @@ const HeroBanner = () => {
                 </div>
 
                 {/* Right visuals */}
-                <div className="relative">
+                <div
+                    className="relative"
+                    data-aos="zoom-in"
+                    data-aos-delay="200"
+                >
                     <div className="card bg-base-100/90 shadow-xl border border-base-300">
                         <div className="card-body space-y-4">
                             <h2 className="card-title text-base-content">
@@ -111,7 +132,11 @@ const HeroBanner = () => {
                     </div>
 
                     {/* Floating badge */}
-                    <div className="absolute -left-3 -top-3 rounded-full bg-success text-success-content px-4 py-1 text-xs font-semibold shadow-md">
+                    <div
+                        className="absolute -left-3 -top-3 rounded-full bg-success text-success-content px-4 py-1 text-xs font-semibold shadow-md"
+                        data-aos="fade-down"
+                        data-aos-delay="300"
+                    >
                         New contests added daily
                     </div>
                 </div>
