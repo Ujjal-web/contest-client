@@ -26,6 +26,7 @@ import ErrorPage from "../pages/ErrorPage";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import AllContests from "../pages/AllContests/AllContests";
 import ContestDetails from "../pages/ContestDetails/ContestDetails";
+import Payment from "../pages/Payment/Payment";
 
 
 
@@ -47,6 +48,14 @@ const router = createBrowserRouter([
                 element: (
                     <PrivateRoute>
                         <ContestDetails />
+                    </PrivateRoute>
+                ),
+            },
+            {
+                path: "/payment/:contestId",
+                element: (
+                    <PrivateRoute>
+                        <Payment />
                     </PrivateRoute>
                 ),
             },
