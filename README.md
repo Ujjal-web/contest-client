@@ -170,12 +170,12 @@ cd contest-client
 
 2. Install dependencies
 Install all required packages:
-
+```
 npm install
-
+```
 3. Create environment variables
 In the root of this project, create a file named .env.local and add:
-
+```
 VITE_API_URL=http://localhost:5000
 VITE_STRIPE_PK=pk_test_yourStripePublishableKey
 
@@ -187,8 +187,10 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=yourMessagingSenderId
 VITE_FIREBASE_APP_ID=yourFirebaseAppId
 
 VITE_API_URL must point to your running backend (by default http://localhost:5000).
+```
 The Firebase values come from your Firebase console.
 The Stripe key is from your Stripe dashboard (publishable test key).
+
 4. Start the development server
 Run the dev server:
 ```
@@ -197,3 +199,4 @@ npm run dev
 Open the URL that Vite prints in the terminal (usually): http://localhost:5173
 
 Make sure the backend server is running before testing login, payments, or dashboards.
+Backendn Repo: https://github.com/Ujjal-web/contest-server.git
