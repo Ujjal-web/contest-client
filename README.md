@@ -1,14 +1,16 @@
 # ContestHub Client
 
 ContestHub is a modern contest management platform where admins, creators, and participants can run and join creative competitions.  
-This repository contains the **frontend** (React + Vite) application.
+This repository contains the **frontend** application.
 
 ---
 
 ## Live Demo
 
 - **Live site**: https://contest-client-11.vercel.app  
-- **Backend API**: https://contest-server-11.vercel.app  
+- **Backend API**: https://contest-server-11.vercel.app
+
+![Screenshot of my project](ContestHub-Home.png)
 
 ### Test Accounts
 
