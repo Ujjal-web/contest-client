@@ -10,6 +10,7 @@ This repository contains the **frontend** application.
 - **Live site**: https://contest-client-11.vercel.app  
 - **Backend API**: https://contest-server-11.vercel.app
 
+## Screenshot of Homepage
 ![Screenshot of my project](ContestHub-Home.png)
 
 ### Test Accounts
