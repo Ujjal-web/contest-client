@@ -17,6 +17,8 @@ const useUserRole = () => {
             // Expect { role: 'admin' | 'creator' | 'user' }
             return res.data.role;
         },
+        refetchOnMount: true,
+        refetchOnWindowFocus: true,
     });
 
     return {

@@ -25,6 +25,7 @@ const CreatorSubmissions = () => {
             const res = await axiosSecure.get(`/contests/${contestId}`);
             return res.data;
         },
+        refetchOnMount: true,
     });
 
     // Fetch submissions for this contest
@@ -42,6 +43,7 @@ const CreatorSubmissions = () => {
             );
             return res.data;
         },
+        refetchOnMount: true,
     });
 
     const isLoading = contestLoading || submissionsLoading;

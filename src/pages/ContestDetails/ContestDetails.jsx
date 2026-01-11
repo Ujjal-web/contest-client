@@ -318,7 +318,7 @@ const ContestDetails = () => {
                                 ? "Contest ended"
                                 : isRegistered
                                     ? "Already registered"
-                                    : "Register / Pay"}
+                                    : "Pay to Register"}
                         </button>
 
                         {/* Submit task button */}

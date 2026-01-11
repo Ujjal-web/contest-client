@@ -14,9 +14,13 @@ const Leaderboard = () => {
             const res = await axiosPublic.get("/leaderboard");
             return res.data; // [{ email, name, photoURL, role, wins, totalPrize }]
         },
+        refetchOnMount: true,
     });
 
+    console.log("Leaderboard component rendered:", { isLoading, isError, leaders });
+
     if (isLoading) {
+        console.log("Leaderboard: isLoading is true");
         return (
             <section className="min-h-50 flex items-center justify-center">
                 <span className="loading loading-spinner loading-lg text-primary" />
@@ -25,6 +29,7 @@ const Leaderboard = () => {
     }
 
     if (isError) {
+        console.log("Leaderboard: isError is true");
         return (
             <section className="space-y-4">
                 <h2 className="text-xl md:text-2xl font-bold text-base-content">
@@ -37,6 +42,7 @@ const Leaderboard = () => {
         );
     }
 
+    console.log("Leaderboard: rendering content");
     return (
         <section className="space-y-8" data-aos="fade-up">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">

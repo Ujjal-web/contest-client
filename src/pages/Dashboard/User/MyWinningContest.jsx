@@ -15,6 +15,7 @@ const MyWinningContest = () => {
             const res = await axiosSecure.get("/users/wins");
             return res.data;
         },
+        refetchOnMount: true,
     });
 
     const totalPrize = wins.reduce(

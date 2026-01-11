@@ -58,7 +58,7 @@ const PopularContestsSection = () => {
             )}
 
             {!isLoading && !isError && contests.length > 0 && (
-                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
                     {contests.map((contest, idx) => (
                         <div
                             key={contest._id}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -17,24 +17,36 @@ const CONTEST_TYPES = [
     "Other",
 ];
 
-const ITEMS_PER_PAGE = 9;
+const ITEMS_PER_PAGE = 8;
 
 const AllContests = () => {
     const axiosPublic = useAxiosPublic();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const initialSearch = searchParams.get("search") || "";
-    const initialType = searchParams.get("type") || "All";
-    const initialPage = parseInt(searchParams.get("page") || "1", 10);
+    // States for filters and pagination
+    const [searchTerm, setSearchTerm] = useState("");
+    const [activeType, setActiveType] = useState("All");
+    const [page, setPage] = useState(1);
 
-    const [searchTerm, setSearchTerm] = useState(initialSearch);
-    const [activeType, setActiveType] = useState(initialType);
-    const [page, setPage] = useState(initialPage);
+    // Effect to synchronize state with URL search parameters
+    useEffect(() => {
+        const newSearch = searchParams.get("search") || "";
+        const newType = searchParams.get("type") || "All";
+        const newPage = parseInt(searchParams.get("page") || "1", 10);
+
+        setSearchTerm(newSearch);
+        setActiveType(newType);
+        setPage(newPage);
+    }, [searchParams]);
 
     // react-hook-form for search form
     const { register, handleSubmit, reset } = useForm({
-        defaultValues: { search: initialSearch },
+        values: { search: searchTerm },
     });
+    
+    useEffect(() => {
+        reset({ search: searchTerm });
+    }, [searchTerm, reset]);
 
     const {
         data,
@@ -52,6 +64,7 @@ const AllContests = () => {
             const res = await axiosPublic.get(`/contests?${params.toString()}`);
             return res.data; // { contests, total, page, totalPages }
         },
+        enabled: !!page, // ensure page is loaded
     });
 
     const contests = data?.contests || [];

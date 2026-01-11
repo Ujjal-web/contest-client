@@ -15,6 +15,7 @@ const MyParticipatedContests = () => {
             const res = await axiosSecure.get("/payments/my");
             return res.data;
         },
+        refetchOnMount: true,
     });
 
     const now = new Date();
