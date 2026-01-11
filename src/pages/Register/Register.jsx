@@ -207,6 +207,10 @@ const Register = () => {
                                         className="input input-bordered"
                                         {...register("photoURL", {
                                             required: "Photo URL is required",
+                                            pattern: {
+                                                value: /^(ftp|http|https):\/\/[^ "]+$/,
+                                                message: "Invalid URL format",
+                                            },
                                         })}
                                     />
                                     {errors.photoURL && (
@@ -233,6 +237,10 @@ const Register = () => {
                                         className="input input-bordered"
                                         {...register("email", {
                                             required: "Email is required",
+                                            pattern: {
+                                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                                message: "Invalid email address",
+                                            },
                                         })}
                                     />
                                     {errors.email && (
@@ -270,6 +278,9 @@ const Register = () => {
                                                 hasNumber: (value) =>
                                                     /\d/.test(value) ||
                                                     "Password must contain at least one number",
+                                                hasSpecialChar: (value) =>
+                                                    /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
+                                                    "Password must contain at least one special character",
                                             },
                                         })}
                                     />

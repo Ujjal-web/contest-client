@@ -23,12 +23,7 @@ const ContestCard = ({ contest }) => {
     const participants = participantsCount ?? participationCount ?? 0;
 
     const handleDetails = () => {
-        if (!user) {
-            // Not logged in → go to login and then back here
-            navigate("/login", { state: { from: location } });
-        } else {
-            navigate(`/contests/${_id}`);
-        }
+        navigate(`/contests/${_id}`);
     };
 
     return (

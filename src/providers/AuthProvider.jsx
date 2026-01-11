@@ -9,6 +9,7 @@ import {
     signOut,
     updateProfile
 } from "firebase/auth";
+import Swal from "sweetalert2";
 import { app } from "../firebase/firebase.config";
 import useAxiosPublic from "../hooks/useAxiosPublic";
 
@@ -79,6 +80,11 @@ const AuthProvider = ({ children }) => {
                     await axiosPublic.post("/users", userForDb);
                 } catch (error) {
                     console.error("Auth state sync error:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Authentication Error',
+                        text: 'Could not sync your authentication status. Please try logging in again.',
+                    });
                 } finally {
                     setLoading(false);
                 }

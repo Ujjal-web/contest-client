@@ -117,7 +117,11 @@ const ContestDetails = () => {
         deadlineDate && deadlineDate.getTime() <= new Date().getTime();
 
     const handleGoToPayment = () => {
-        navigate(`/payment/${_id}`);
+        if (user) {
+            navigate(`/payment/${_id}`);
+        } else {
+            navigate(`/login`, { state: { from: `/payment/${_id}` } });
+        }
     };
 
     const handleSubmitTask = async (content) => {
@@ -318,7 +322,9 @@ const ContestDetails = () => {
                                 ? "Contest ended"
                                 : isRegistered
                                     ? "Already registered"
-                                    : "Pay to Register"}
+                                    : user
+                                        ? "Pay to Register"
+                                        : "Login to Pay"}
                         </button>
 
                         {/* Submit task button */}

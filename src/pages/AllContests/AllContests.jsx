@@ -27,16 +27,24 @@ const AllContests = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeType, setActiveType] = useState("All");
     const [page, setPage] = useState(1);
+    const [sortBy, setSortBy] = useState("createdAt_desc"); // default sort
+    const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
 
     // Effect to synchronize state with URL search parameters
     useEffect(() => {
         const newSearch = searchParams.get("search") || "";
         const newType = searchParams.get("type") || "All";
         const newPage = parseInt(searchParams.get("page") || "1", 10);
+        const newSortBy = searchParams.get("sortBy") || "createdAt_desc";
+        const newMinPrice = searchParams.get("price_min") || 0;
+        const newMaxPrice = searchParams.get("price_max") || 1000;
+
 
         setSearchTerm(newSearch);
         setActiveType(newType);
         setPage(newPage);
+        setSortBy(newSortBy);
+        setPriceRange({ min: newMinPrice, max: newMaxPrice });
     }, [searchParams]);
 
     // react-hook-form for search form
@@ -53,13 +61,20 @@ const AllContests = () => {
         isLoading,
         isError,
     } = useQuery({
-        queryKey: ["all-contests", searchTerm, activeType, page],
+        queryKey: ["all-contests", searchTerm, activeType, page, sortBy, priceRange],
         queryFn: async () => {
             const params = new URLSearchParams();
             if (searchTerm) params.append("search", searchTerm);
             if (activeType !== "All") params.append("type", activeType);
             params.append("page", page);
             params.append("limit", ITEMS_PER_PAGE);
+
+            const [sortField, sortOrder] = sortBy.split('_');
+            params.append("sort_by", sortField);
+            params.append("sort_order", sortOrder);
+
+            params.append("price_min", priceRange.min);
+            params.append("price_max", priceRange.max);
 
             const res = await axiosPublic.get(`/contests?${params.toString()}`);
             return res.data; // { contests, total, page, totalPages }
@@ -75,9 +90,12 @@ const AllContests = () => {
     const onSearchSubmit = (data) => {
         const trimmed = (data.search || "").trim();
 
-        const params = new URLSearchParams();
-        if (trimmed) params.set("search", trimmed);
-        if (activeType && activeType !== "All") params.set("type", activeType);
+        const params = new URLSearchParams(searchParams);
+        if (trimmed) {
+            params.set("search", trimmed);
+        } else {
+            params.delete("search");
+        }
         params.set("page", "1");
 
         setPage(1);
@@ -87,9 +105,35 @@ const AllContests = () => {
 
     const handleTypeChange = (type) => {
         setActiveType(type);
-        const params = new URLSearchParams();
-        if (searchTerm.trim()) params.set("search", searchTerm.trim());
-        if (type !== "All") params.set("type", type);
+        const params = new URLSearchParams(searchParams);
+        if (type !== "All") {
+            params.set("type", type);
+        } else {
+            params.delete("type");
+        }
+        params.set("page", "1");
+        setPage(1);
+        setSearchParams(params);
+    };
+
+    const handleSortChange = (e) => {
+        const newSortBy = e.target.value;
+        setSortBy(newSortBy);
+        const params = new URLSearchParams(searchParams);
+        params.set("sortBy", newSortBy);
+        params.set("page", "1");
+        setPage(1);
+        setSearchParams(params);
+    };
+
+    const handlePriceChange = (e) => {
+        const { name, value } = e.target;
+        const newPriceRange = { ...priceRange, [name]: value };
+        setPriceRange(newPriceRange);
+
+        const params = new URLSearchParams(searchParams);
+        params.set("price_min", newPriceRange.min);
+        params.set("price_max", newPriceRange.max);
         params.set("page", "1");
         setPage(1);
         setSearchParams(params);
@@ -98,9 +142,7 @@ const AllContests = () => {
     const handleChangePage = (newPage) => {
         if (newPage < 1 || newPage > totalPages) return;
         setPage(newPage);
-        const params = new URLSearchParams();
-        if (searchTerm.trim()) params.set("search", searchTerm.trim());
-        if (activeType !== "All") params.set("type", activeType);
+        const params = new URLSearchParams(searchParams);
         params.set("page", String(newPage));
         setSearchParams(params);
     };
@@ -159,6 +201,43 @@ const AllContests = () => {
                         {type}
                     </button>
                 ))}
+            </div>
+
+            {/* Filters and Sorting */}
+            <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium">Sort by:</label>
+                    <select
+                        className="select select-bordered select-sm"
+                        value={sortBy}
+                        onChange={handleSortChange}
+                    >
+                        <option value="createdAt_desc">Newest</option>
+                        <option value="createdAt_asc">Oldest</option>
+                        <option value="prize_desc">Prize (High to Low)</option>
+                        <option value="prize_asc">Prize (Low to High)</option>
+                    </select>
+                </div>
+                <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium">Price Range:</label>
+                    <input
+                        type="number"
+                        name="min"
+                        placeholder="Min"
+                        className="input input-bordered input-sm w-24"
+                        value={priceRange.min}
+                        onChange={handlePriceChange}
+                    />
+                    <span className="text-gray-500">-</span>
+                    <input
+                        type="number"
+                        name="max"
+                        placeholder="Max"
+                        className="input input-bordered input-sm w-24"
+                        value={priceRange.max}
+                        onChange={handlePriceChange}
+                    />
+                </div>
             </div>
 
             {/* Content */}
