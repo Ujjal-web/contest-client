@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ContestCard from "../../components/contests/ContestCard";
+import ContestCardSkeleton from "../../components/contests/ContestCardSkeleton";
 
 const PopularContestsSection = () => {
     const axiosPublic = useAxiosPublic();
@@ -36,21 +37,9 @@ const PopularContestsSection = () => {
             </div>
 
             {isLoading && (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {Array.from({ length: 3 }).map((_, idx) => (
-                        <div
-                            key={idx}
-                            className="animate-pulse rounded-2xl bg-base-100 border border-base-300 p-4 space-y-3"
-                        >
-                            <div className="h-32 rounded-xl bg-base-300" />
-                            <div className="h-4 w-2/3 bg-base-300 rounded" />
-                            <div className="h-3 w-full bg-base-300 rounded" />
-                            <div className="h-3 w-1/2 bg-base-300 rounded" />
-                            <div className="flex justify-between pt-2">
-                                <div className="h-7 w-20 bg-base-300 rounded-full" />
-                                <div className="h-7 w-16 bg-base-300 rounded-full" />
-                            </div>
-                        </div>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {Array.from({ length: 4 }).map((_, idx) => (
+                        <ContestCardSkeleton key={idx} />
                     ))}
                 </div>
             )}
@@ -69,7 +58,7 @@ const PopularContestsSection = () => {
             )}
 
             {!isLoading && !isError && contests.length > 0 && (
-                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {contests.map((contest, idx) => (
                         <div
                             key={contest._id}

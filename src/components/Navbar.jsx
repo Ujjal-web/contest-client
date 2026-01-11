@@ -66,96 +66,70 @@ const Navbar = () => {
     );
 
     return (
-        <header className="sticky top-0 z-50 bg-base-100/90 backdrop-blur border-b border-base-300">
+        <header className="sticky top-0 z-50 w-full bg-base-100/80 backdrop-blur-md border-b border-base-200 shadow-sm transition-all duration-300">
             <nav className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
                 {/* Left: brand */}
                 <div className="flex items-center gap-2">
                     <Link
                         to="/"
-                        className="text-xl sm:text-2xl font-black tracking-tight text-primary"
+                        className="text-2xl font-black tracking-tight bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent hover:opacity-80 transition-opacity"
                     >
                         ContestHub
                     </Link>
                 </div>
 
                 {/* Desktop nav */}
-                <ul className="hidden md:flex items-center gap-4">{navLinks}</ul>
+                <ul className="hidden md:flex items-center gap-1">{navLinks}
+                    {user && (
+                        <li>
+                            <NavLink to="/dashboard" className={navLinkClass}>
+                                Dashboard
+                            </NavLink>
+                        </li>
+                    )}
+                </ul>
 
                 {/* Right section: theme + auth + mobile button */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     {/* Theme toggle */}
                     <button
                         onClick={handleThemeToggle}
-                        className="btn btn-ghost btn-circle btn-xs sm:btn-sm"
+                        className="btn btn-ghost btn-circle btn-sm hover:bg-base-200 transition-colors"
                         aria-label="Toggle theme"
                     >
                         {theme === "light" ? (
-                            // Moon icon
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-5 h-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.8}
-                                    d="M20.354 15.354A9 9 0 018.646 3.646 7 7 0 1019 16a6.97 6.97 0 01-1.354-.646z"
-                                />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M20.354 15.354A9 9 0 018.646 3.646 7 7 0 1019 16a6.97 6.97 0 01-1.354-.646z" /></svg>
                         ) : (
-                            // Sun icon
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="w-5 h-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.8}
-                                    d="M12 3v2.25M18.364 5.636l-1.59 1.59M21 12h-2.25M18.364 18.364l-1.59-1.59M12 18.75V21M7.227 16.773l-1.59 1.59M5.25 12H3M7.227 7.227l-1.59-1.59M12 8.25A3.75 3.75 0 1112 15.75 3.75 3.75 0 0112 8.25z"
-                                />
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 3v2.25M18.364 5.636l-1.59 1.59M21 12h-2.25M18.364 18.364l-1.59-1.59M12 18.75V21M7.227 16.773l-1.59 1.59M5.25 12H3M7.227 7.227l-1.59-1.59M12 8.25A3.75 3.75 0 1112 15.75 3.75 3.75 0 0112 8.25z" /></svg>
                         )}
                     </button>
 
                     {/* Auth controls (desktop + tablet) */}
-                    <div className="hidden sm:flex items-center gap-2 text-sm">
+                    <div className="hidden sm:flex items-center gap-2">
                         {user ? (
                             <div className="dropdown dropdown-end">
-                                <label tabIndex={0} className="btn btn-ghost btn-sm gap-2">
-                                    <img
-                                        src={
-                                            user?.photoURL ||
-                                            "https://i.ibb.co/YfGbxwG/default-avatar.png"
-                                        }
-                                        alt={user?.displayName || "User"}
-                                        className="w-8 h-8 rounded-full object-cover border border-base-300"
-                                    />
-                                    <span className="max-w-25 truncate text-xs">
-                                        {user?.displayName || "User"}
-                                    </span>
+                                <label tabIndex={0} className="btn btn-ghost btn-circle avatar ring ring-primary ring-offset-base-100 ring-offset-2 hover:scale-105 transition-transform">
+                                    <div className="w-9 rounded-full">
+                                        <img
+                                            src={user?.photoURL || "https://i.ibb.co/YfGbxwG/default-avatar.png"}
+                                            alt={user?.displayName || "User"}
+                                        />
+                                    </div>
                                 </label>
                                 <ul
                                     tabIndex={0}
-                                    className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+                                    className="dropdown-content menu p-2 shadow-lg bg-base-100 rounded-box w-60 border border-base-200 mt-4 z-[60]"
                                 >
-                                    <li className="menu-title text-xs">
-                                        <span>Signed in as</span>
+                                    <li className="menu-title px-4 py-2 border-b border-base-200 mb-2">
+                                        <span className="text-xs font-semibold uppercase tracking-wider text-base-content/50">Signed in as</span>
+                                        <span className="text-sm font-bold text-primary truncate block max-w-[12rem]">{user?.displayName}</span>
+                                        <span className="text-xs text-base-content/70 truncate block max-w-[12rem] lowercase">{user?.email}</span>
                                     </li>
-                                    <li className="px-2 pb-1 text-xs truncate text-base-content/80">
-                                        {user?.displayName || user?.email}
-                                    </li>
+                                    <li><Link to="/dashboard" className="font-medium">Dashboard</Link></li>
+                                    <li><Link to="/profile" className="font-medium">My Profile</Link></li>
+                                    <div className="divider my-1"></div>
                                     <li>
-                                        <Link to="/dashboard">Dashboard</Link>
-                                    </li>
-                                    <li>
-                                        <button onClick={handleLogout} className="text-error">
+                                        <button onClick={handleLogout} className="text-error font-medium hover:bg-error/10">
                                             Logout
                                         </button>
                                     </li>
@@ -163,12 +137,8 @@ const Navbar = () => {
                             </div>
                         ) : (
                             <>
-                                <Link to="/login" className="btn btn-ghost btn-sm">
-                                    Login
-                                </Link>
-                                <Link to="/register" className="btn btn-primary btn-sm">
-                                    Register
-                                </Link>
+                                <Link to="/login" className="btn btn-ghost btn-sm font-medium">Login</Link>
+                                <Link to="/register" className="btn btn-primary btn-sm font-bold shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-shadow">Register</Link>
                             </>
                         )}
                     </div>
@@ -179,27 +149,11 @@ const Navbar = () => {
                         onClick={() => setIsMenuOpen((prev) => !prev)}
                         aria-label="Open menu"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             {isMenuOpen ? (
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.8}
-                                    d="M6 18L18 6M6 6l12 12"
-                                />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             ) : (
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.8}
-                                    d="M4 6h16M4 12h12M4 18h8"
-                                />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h12M4 18h8" />
                             )}
                         </svg>
                     </button>
@@ -207,61 +161,44 @@ const Navbar = () => {
             </nav>
 
             {/* Mobile dropdown menu */}
-            {isMenuOpen && (
-                <div className="md:hidden border-t border-base-300 bg-base-100">
-                    <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
-                        <ul className="flex flex-col gap-2">{navLinks}</ul>
+            <div className={`md:hidden absolute w-full bg-base-100/95 backdrop-blur-xl border-t border-base-200 transition-all duration-300 ease-in-out overflow-hidden ${isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}>
+                <div className="px-4 py-4 space-y-3 shadow-xl">
+                    <ul className="flex flex-col gap-1">
+                        {navLinks}
+                        {user && (
+                            <li>
+                                <NavLink to="/dashboard" className={navLinkClass}>
+                                    Dashboard
+                                </NavLink>
+                            </li>
+                        )}
+                    </ul>
 
-                        <div className="flex items-center justify-between pt-3 border-t border-base-300">
-                            {user ? (
-                                <>
-                                    <div className="flex items-center gap-2">
-                                        <img
-                                            src={
-                                                user?.photoURL ||
-                                                "https://i.ibb.co/YfGbxwG/default-avatar.png"
-                                            }
-                                            alt={user?.displayName || "User"}
-                                            className="w-8 h-8 rounded-full object-cover border border-base-300"
-                                        />
-                                        <div className="flex flex-col">
-                                            <span className="text-sm font-medium">
-                                                {user?.displayName || "User"}
-                                            </span>
-                                            <span className="text-xs text-base-content/70 truncate max-w-40">
-                                                {user?.email}
-                                            </span>
+                    <div className="pt-3 border-t border-base-200">
+                        {user ? (
+                            <div className="flex flex-col gap-3">
+                                <div className="flex items-center gap-3 p-2 rounded-lg bg-base-200/50">
+                                    <div className="avatar">
+                                        <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                                            <img src={user?.photoURL || "https://i.ibb.co/YfGbxwG/default-avatar.png"} alt="User" />
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={handleLogout}
-                                        className="btn btn-outline btn-xs text-error border-error"
-                                    >
-                                        Logout
-                                    </button>
-                                </>
-                            ) : (
-                                <div className="flex gap-2 w-full">
-                                    <Link
-                                        to="/login"
-                                        className="btn btn-ghost btn-sm flex-1"
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        Login
-                                    </Link>
-                                    <Link
-                                        to="/register"
-                                        className="btn btn-primary btn-sm flex-1"
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        Register
-                                    </Link>
+                                    <div className="flex flex-col overflow-hidden">
+                                        <span className="text-sm font-bold truncate">{user?.displayName}</span>
+                                        <span className="text-xs text-base-content/70 truncate">{user?.email}</span>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
+                                <button onClick={handleLogout} className="btn btn-outline btn-sm btn-error w-full">Logout</button>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 gap-3">
+                                <Link to="/login" className="btn btn-ghost btn-sm w-full" onClick={() => setIsMenuOpen(false)}>Login</Link>
+                                <Link to="/register" className="btn btn-primary btn-sm w-full" onClick={() => setIsMenuOpen(false)}>Register</Link>
+                            </div>
+                        )}
                     </div>
                 </div>
-            )}
+            </div>
         </header>
     );
 };

@@ -1,7 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const HeroBanner = () => {
+    // Featured contests data for slider
+    const featured = [
+        { title: "Minimal logo redesign", prize: "$150", badge: "primary" },
+        { title: "Article: Future of remote work", prize: "$120", badge: "secondary" },
+        { title: "Indie game review showcase", prize: "$90", badge: "accent" },
+    ];
+    const [slideIndex, setSlideIndex] = useState(0);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSlideIndex((prev) => (prev + 1) % featured.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
     const navigate = useNavigate();
 
     // react-hook-form setup
@@ -19,7 +34,7 @@ const HeroBanner = () => {
 
     return (
         <section
-            className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary/15 via-secondary/10 to-accent/15 border border-base-300 px-6 py-10 md:px-12 lg:py-16"
+            className="relative overflow-hidden rounded-3xl bg-linear-to-r from-primary/15 via-secondary/10 to-accent/15 border border-base-300 px-6 py-10 md:px-12 lg:py-16 min-h-[60vh] max-h-[70vh] flex flex-col justify-center"
             data-aos="fade-up"
             data-aos-delay="50"
         >
@@ -104,28 +119,16 @@ const HeroBanner = () => {
                                 Today’s featured contests
                             </h2>
                             <ul className="space-y-3 text-sm">
-                                <li className="flex items-center justify-between">
-                                    <span>Minimal logo redesign</span>
-                                    <span className="badge badge-outline badge-primary">
-                                        $150
-                                    </span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                    <span>Article: Future of remote work</span>
-                                    <span className="badge badge-outline badge-secondary">
-                                        $120
-                                    </span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                    <span>Indie game review showcase</span>
-                                    <span className="badge badge-outline badge-accent">
-                                        $90
-                                    </span>
-                                </li>
+                                {featured.map((item, idx) => (
+                                    <li key={idx} className="flex items-center justify-between">
+                                        <span>{item.title}</span>
+                                        <span className={`badge badge-outline badge-${item.badge}`}>{item.prize}</span>
+                                    </li>
+                                ))}
                             </ul>
                             <div className="card-actions justify-end">
-                                <Link to="/all-contests" className="btn btn-sm btn-ghost">
-                                    Explore all contests
+                                <Link to="/all-contests" className="btn btn-primary btn-sm">
+                                    Explore All Contests
                                 </Link>
                             </div>
                         </div>
@@ -138,6 +141,13 @@ const HeroBanner = () => {
                         data-aos-delay="300"
                     >
                         New contests added daily
+                    </div>
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
+                        <a href="#next-section" aria-label="Scroll to next section">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import ContestCard from "../../components/contests/ContestCard";
+import ContestCardSkeleton from "../../components/contests/ContestCardSkeleton";
 
 const CONTEST_TYPES = [
     "All",
@@ -138,8 +139,8 @@ const AllContests = () => {
                         type="button"
                         onClick={() => handleTypeChange(type)}
                         className={`px-3 py-1 rounded-full text-xs md:text-sm border transition-colors ${activeType === type
-                                ? "bg-primary text-primary-content border-primary"
-                                : "bg-base-100 text-base-content/70 border-base-300 hover:bg-base-200"
+                            ? "bg-primary text-primary-content border-primary"
+                            : "bg-base-100 text-base-content/70 border-base-300 hover:bg-base-200"
                             }`}
                     >
                         {type}
@@ -149,21 +150,9 @@ const AllContests = () => {
 
             {/* Content */}
             {isLoading && (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {Array.from({ length: ITEMS_PER_PAGE }).map((_, idx) => (
-                        <div
-                            key={idx}
-                            className="animate-pulse rounded-2xl bg-base-100 border border-base-300 p-4 space-y-3"
-                        >
-                            <div className="h-32 rounded-xl bg-base-300" />
-                            <div className="h-4 w-2/3 bg-base-300 rounded" />
-                            <div className="h-3 w-full bg-base-300 rounded" />
-                            <div className="h-3 w-1/2 bg-base-300 rounded" />
-                            <div className="flex justify-between pt-2">
-                                <div className="h-7 w-20 bg-base-300 rounded-full" />
-                                <div className="h-7 w-16 bg-base-300 rounded-full" />
-                            </div>
-                        </div>
+                        <ContestCardSkeleton key={idx} />
                     ))}
                 </div>
             )}
@@ -183,7 +172,7 @@ const AllContests = () => {
 
             {!isLoading && !isError && contests.length > 0 && (
                 <>
-                    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {contests.map((contest, idx) => (
                             <div
                                 key={contest._id}

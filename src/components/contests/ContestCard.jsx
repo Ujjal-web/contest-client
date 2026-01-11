@@ -32,9 +32,9 @@ const ContestCard = ({ contest }) => {
     };
 
     return (
-        <div className="card bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition duration-200 rounded-2xl overflow-hidden flex flex-col">
+        <div className="card h-full bg-base-100 shadow-sm border border-base-300 hover:shadow-md transition duration-200 rounded-2xl overflow-hidden flex flex-col">
             {image && (
-                <figure className="h-40 overflow-hidden">
+                <figure className="h-28 overflow-hidden">
                     <img
                         src={image}
                         alt={displayName}
@@ -42,29 +42,29 @@ const ContestCard = ({ contest }) => {
                     />
                 </figure>
             )}
-            <div className="card-body flex-1 space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                    <span className="badge badge-outline badge-sm capitalize">
+            <div className="card-body p-2 flex-1 gap-1">
+                <div className="flex items-center justify-between gap-1">
+                    <span className="badge badge-outline badge-xs capitalize">
                         {type || "Open"}
                     </span>
                     {typeof prizeMoney === "number" && (
-                        <span className="badge badge-primary badge-sm">
+                        <span className="badge badge-primary badge-xs">
                             Prize ${prizeMoney}
                         </span>
                     )}
                 </div>
 
-                <h3 className="card-title text-base md:text-lg">{displayName}</h3>
+                <h3 className="card-title text-lg">{displayName}</h3>
 
                 {description && (
-                    <p className="text-xs md:text-sm text-base-content/70">
-                        {description.length > 110
-                            ? `${description.slice(0, 110)}…`
+                    <p className="text-base text-base-content/70 leading-tight">
+                        {description.length > 50
+                            ? `${description.slice(0, 50)}…`
                             : description}
                     </p>
                 )}
 
-                <div className="flex items-center justify-between text-xs text-base-content/70 pt-2">
+                <div className="flex items-center justify-between text-sm text-base-content/70 mt-auto pt-1">
                     <span>
                         Participants: <span className="font-semibold">{participants}</span>
                     </span>
@@ -73,10 +73,10 @@ const ContestCard = ({ contest }) => {
                     )}
                 </div>
 
-                <div className="card-actions justify-end pt-2">
+                <div className="card-actions justify-end pt-1">
                     <button
                         onClick={handleDetails}
-                        className="btn btn-sm btn-primary normal-case"
+                        className="btn btn-xs btn-primary normal-case"
                     >
                         View details
                     </button>

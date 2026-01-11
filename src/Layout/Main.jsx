@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const Main = () => {
     return (
@@ -15,13 +16,7 @@ const Main = () => {
             </main>
 
             {/* Footer */}
-            <footer className="mt-8 border-t border-base-300 bg-base-200">
-                <div className="footer footer-center p-4 text-base-content">
-                    <aside>
-                        <p>Copyright © 2025 ContestHub - All rights reserved</p>
-                    </aside>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };
