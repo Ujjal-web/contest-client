@@ -199,6 +199,11 @@ const DashboardLayout = () => {
                                                     My created contests
                                                 </NavLink>
                                             </li>
+                                            <li>
+                                                <NavLink to="/dashboard" end className={navLinkClass}>
+                                                    Creator overview
+                                                </NavLink>
+                                            </li>
                                         </ul>
                                     </div>
                                 )}
@@ -224,6 +229,11 @@ const DashboardLayout = () => {
                                                     className={navLinkClass}
                                                 >
                                                     Manage contests
+                                                </NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to="/dashboard" end className={navLinkClass}>
+                                                    Platform overview
                                                 </NavLink>
                                             </li>
                                         </ul>

@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useUserRole from "../../hooks/useUserRole";
+import AdminDashboardCharts from "../Dashboard/Admin/AdminDashboardCharts";
+import CreatorDashboardCharts from "../Dashboard/Creator/CreatorDashboardCharts";
+import UserDashboardCharts from "../Dashboard/User/UserDashboardCharts";
 
 const Dashboard = () => {
     const { user } = useAuth() || {};
@@ -43,13 +46,30 @@ const Dashboard = () => {
             </section>
 
             {/* Participant / Normal user section */}
-            {isUser && <UserDashboardSection />}
+            {isUser && (
+                <>
+                    <UserDashboardCharts />
+                    <UserDashboardSection />
+                </>
+            )}
 
             {/* Creator section */}
-            {isCreator && <CreatorDashboardSection />}
+            {isCreator && (
+                <>
+                    <CreatorMenu />
+                    <CreatorDashboardCharts />
+                    <CreatorDashboardSection />
+                </>
+            )}
 
             {/* Admin section */}
-            {isAdmin && <AdminDashboardSection />}
+            {isAdmin && (
+                <>
+                    <AdminMenu />
+                    <AdminDashboardCharts />
+                    <AdminDashboardSection />
+                </>
+            )}
         </div>
     );
 };
@@ -180,4 +200,36 @@ const AdminDashboardSection = () => (
             />
         </div>
     </section>
+);
+
+/* ---------- Role menus ---------- */
+const navBtnClass = ({ isActive }) =>
+    `px-3 py-1 rounded-md text-sm transition-colors ${isActive ? "bg-primary text-primary-content font-semibold" : "text-base-content/80 hover:bg-base-200"}`;
+
+const CreatorMenu = () => (
+    <nav className="flex gap-2 items-center">
+        <NavLink to="/dashboard/creator/add-contest" className={navBtnClass}>
+            Add contest
+        </NavLink>
+        <NavLink to="/dashboard/creator/my-contests" className={navBtnClass}>
+            My contests
+        </NavLink>
+        <NavLink to="/dashboard/creator/submissions" className={navBtnClass}>
+            Submissions
+        </NavLink>
+    </nav>
+);
+
+const AdminMenu = () => (
+    <nav className="flex gap-2 items-center">
+        <NavLink to="/dashboard/admin/manage-contests" className={navBtnClass}>
+            Manage contests
+        </NavLink>
+        <NavLink to="/dashboard/admin/manage-users" className={navBtnClass}>
+            Manage users
+        </NavLink>
+        <NavLink to="/dashboard" className={navBtnClass}>
+            Platform overview
+        </NavLink>
+    </nav>
 );

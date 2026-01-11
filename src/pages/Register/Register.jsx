@@ -6,404 +6,137 @@ import useAxiosPublic from "../../hooks/useAxiosPublic";
 
 const Register = () => {
     const { createUser, updateUserProfile, googleSignIn } = useAuth() || {};
-    const axiosPublic = useAxiosPublic();
+    const axios = useAxiosPublic();
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
 
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting },
-        reset,
         watch,
-    } = useForm({
-        defaultValues: {
-            rolePreference: "user",
-        },
-    });
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm();
 
     const passwordValue = watch("password");
 
-    const saveUserToDb = async (userObj) => {
-        try {
-            await axiosPublic.post("/users", userObj);
-        } catch (error) {
-            console.error("Failed to save user:", error);
-        }
-    };
-
     const onSubmit = async (data) => {
-        if (!createUser || !updateUserProfile) return;
-
         try {
-            // 1. Create Firebase account
-            const result = await createUser(data.email, data.password);
-            const createdUser = result.user;
-
-            // 2. Update Firebase profile
-            await updateUserProfile(data.name, data.photoURL);
-
-            // 3. Save user to backend database
-            const userInfo = {
-                name: data.name,
-                email: data.email,
-                photoURL: data.photoURL,
-                role: "user", // real role; admin can change later
-                rolePreference: data.rolePreference, // how they want to use the platform
-            };
-
-            await saveUserToDb(userInfo);
-
-            Swal.fire({
-                icon: "success",
-                title: "Account created",
-                text:
-                    data.rolePreference === "creator"
-                        ? "Your account is ready. An admin can upgrade you to Contest Creator."
-                        : "Your account is ready. Start joining contests right away.",
-                timer: 2200,
-                showConfirmButton: false,
-            });
-
-            reset();
-            navigate(from, { replace: true });
-        } catch (error) {
-            console.error(error);
-
-            let message = "Unable to create account. Please try again.";
-
-            if (error?.code === "auth/email-already-in-use") {
-                message = "This email is already registered. Try logging in instead.";
+            const { name, photoURL, email, password, rolePreference } = data;
+            const created = await createUser(email, password);
+            if (created) {
+                await updateUserProfile({ displayName: name, photoURL });
+                const payload = { name, email, photoURL, role: rolePreference || "user" };
+                await axios.post("/users", payload);
+                Swal.fire("Success", "Account created successfully", "success");
+                reset();
+                const dest = location?.state?.from?.pathname || "/";
+                navigate(dest, { replace: true });
             }
-
-            Swal.fire({
-                icon: "error",
-                title: "Registration failed",
-                text: message,
-            });
+        } catch (err) {
+            Swal.fire("Error", err?.message || "Registration failed", "error");
         }
     };
 
     const handleGoogleRegister = async () => {
-        if (!googleSignIn) return;
-
         try {
-            const result = await googleSignIn();
-            const loggedUser = result.user;
-
-            const userInfo = {
-                name: loggedUser.displayName,
-                email: loggedUser.email,
-                photoURL: loggedUser.photoURL,
-                role: "user",
-                rolePreference: "user",
-            };
-
-            await saveUserToDb(userInfo);
-
-            Swal.fire({
-                icon: "success",
-                title: "Signed up with Google",
-                text: "Your account is ready. You can start joining contests.",
-                timer: 2200,
-                showConfirmButton: false,
-            });
-
-            navigate(from, { replace: true });
-        } catch (error) {
-            console.error(error);
-            Swal.fire({
-                icon: "error",
-                title: "Google signup failed",
-                text: "Unable to sign up with Google right now.",
-            });
+            const res = await googleSignIn();
+            const user = res?.user;
+            if (user?.email) {
+                const payload = { name: user.displayName, email: user.email, photoURL: user.photoURL, role: "user" };
+                await axios.post("/users", payload);
+                Swal.fire("Success", "Signed in with Google", "success");
+                const dest = location?.state?.from?.pathname || "/";
+                navigate(dest, { replace: true });
+            }
+        } catch (err) {
+            Swal.fire("Error", err?.message || "Google sign-in failed", "error");
         }
     };
-
     return (
-        <div className="min-h-[calc(100vh-140px)] flex items-center justify-center">
-            <div className="grid w-full max-w-5xl gap-8 md:grid-cols-2 items-start">
-                {/* Left: roles overview */}
-                <div className="hidden md:flex flex-col gap-4 mt-4">
-                    <h1 className="text-3xl lg:text-4xl font-black text-base-content">
-                        Create your ContestHub account
-                    </h1>
-                    <p className="text-sm text-base-content/70">
-                        Every new account starts as a participant. If you select “Contest
-                        creator” below, admins can review your profile and upgrade your
-                        role.
-                    </p>
-
-                    <div className="space-y-3 text-sm">
-                        <RoleInfo
-                            title="Participant (Normal user)"
-                            description="Join contests after payment, submit tasks, and track your participated and winning contests."
-                        />
-                        <RoleInfo
-                            title="Contest creator"
-                            description="Propose and host contests. Once an admin approves your creator role, you can add, edit, and manage contests."
-                        />
-                        <RoleInfo
-                            title="Admin"
-                            description="Reserved for platform administrators. Admins approve contests and change user roles."
-                        />
+        <div className="min-h-[calc(100vh-140px)] flex items-center justify-center px-4">
+            <div className="w-full max-w-5xl grid gap-8 md:grid-cols-2 items-start">
+                {/* Left: info panel (desktop) */}
+                <div className="hidden md:flex flex-col justify-center gap-6 p-8 rounded-3xl bg-gradient-to-br from-primary/8 to-accent/6 border border-base-200">
+                    <h1 className="text-4xl font-extrabold text-base-content">Create your ContestHub account</h1>
+                    <p className="text-base text-base-content/70 max-w-lg">Start as a participant and request creator access when ready. Join contests, submit work, and win prizes.</p>
+                    <div className="space-y-2">
+                        <RoleInfo title="Participant (Normal user)" description="Join contests after payment, submit tasks, and track your participated and winning contests." />
+                        <RoleInfo title="Contest creator" description="Propose and host contests. Once an admin approves your creator role, you can manage contests and declare winners." />
                     </div>
                 </div>
 
                 {/* Right: register card */}
-                <div className="w-full max-w-md mx-auto mb-6">
-                    <div className="card bg-base-100 shadow-xl border border-base-300">
-                        <div className="card-body space-y-4">
-                            <h2 className="text-2xl font-bold text-center text-base-content">
-                                Sign up to get started
-                            </h2>
-                            <p className="text-center text-xs text-base-content/70">
-                                You can join contests immediately. Creator and admin roles are
-                                managed by the platform team.
-                            </p>
-
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-                                {/* Name */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">Full name</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                This name will appear on leaderboards and winner
-                                                announcements.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter your full name"
-                                        className="input input-bordered"
-                                        {...register("name", {
-                                            required: "Name is required",
-                                        })}
-                                    />
-                                    {errors.name && (
-                                        <p className="text-xs text-error mt-1">
-                                            {errors.name.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Photo URL */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">Photo URL</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                Link to your profile picture. It helps others recognize
-                                                you in contests and dashboards.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="https://your-photo-link.com/image.jpg"
-                                        className="input input-bordered"
-                                        {...register("photoURL", {
-                                            required: "Photo URL is required",
-                                            pattern: {
-                                                value: /^(ftp|http|https):\/\/[^ "]+$/,
-                                                message: "Invalid URL format",
-                                            },
-                                        })}
-                                    />
-                                    {errors.photoURL && (
-                                        <p className="text-xs text-error mt-1">
-                                            {errors.photoURL.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Email */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">Email address</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                We use your email for login and important contest
-                                                updates.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="email"
-                                        placeholder="you@example.com"
-                                        className="input input-bordered"
-                                        {...register("email", {
-                                            required: "Email is required",
-                                            pattern: {
-                                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                                message: "Invalid email address",
-                                            },
-                                        })}
-                                    />
-                                    {errors.email && (
-                                        <p className="text-xs text-error mt-1">
-                                            {errors.email.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Password */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">Password</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                Use at least 6 characters with one uppercase letter and
-                                                one number.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="password"
-                                        placeholder="Create a strong password"
-                                        className="input input-bordered"
-                                        {...register("password", {
-                                            required: "Password is required",
-                                            minLength: {
-                                                value: 6,
-                                                message: "Password must be at least 6 characters",
-                                            },
-                                            validate: {
-                                                hasUppercase: (value) =>
-                                                    /[A-Z]/.test(value) ||
-                                                    "Password must contain at least one uppercase letter",
-                                                hasNumber: (value) =>
-                                                    /\d/.test(value) ||
-                                                    "Password must contain at least one number",
-                                                hasSpecialChar: (value) =>
-                                                    /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-                                                    "Password must contain at least one special character",
-                                            },
-                                        })}
-                                    />
-                                    {errors.password && (
-                                        <p className="text-xs text-error mt-1">
-                                            {errors.password.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Confirm password */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">Confirm password</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                Re-enter your password to avoid typos.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="password"
-                                        placeholder="Re-enter your password"
-                                        className="input input-bordered"
-                                        {...register("confirmPassword", {
-                                            required: "Please confirm your password",
-                                            validate: (value) =>
-                                                value === passwordValue ||
-                                                "Passwords do not match",
-                                        })}
-                                    />
-                                    {errors.confirmPassword && (
-                                        <p className="text-xs text-error mt-1">
-                                            {errors.confirmPassword.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Role preference */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">How do you plan to use ContestHub?</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                Your account starts as a participant. Admins can review
-                                                your preference and promote you to creator.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <div className="grid gap-2">
-                                        <label className="flex items-start gap-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                value="user"
-                                                className="radio radio-primary mt-1"
-                                                {...register("rolePreference")}
-                                                defaultChecked
-                                            />
-                                            <span className="text-xs text-base-content/80">
-                                                <span className="block font-medium">
-                                                    Join contests as a participant
-                                                </span>
-                                                <span className="block text-base-content/60">
-                                                    Pay entry fees, submit tasks, and grow your win
-                                                    history.
-                                                </span>
-                                            </span>
-                                        </label>
-
-                                        <label className="flex items-start gap-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                value="creator"
-                                                className="radio radio-secondary mt-1"
-                                                {...register("rolePreference")}
-                                            />
-                                            <span className="text-xs text-base-content/80">
-                                                <span className="block font-medium">
-                                                    Host contests as a creator
-                                                </span>
-                                                <span className="block text-base-content/60">
-                                                    Propose contests and, once approved by an admin, add
-                                                    new contests, edit details, and declare winners.
-                                                </span>
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary w-full mt-2"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? (
-                                        <span className="loading loading-spinner loading-sm"></span>
-                                    ) : (
-                                        "Create account"
-                                    )}
-                                </button>
-                            </form>
-
-                            {/* Divider */}
-                            <div className="divider text-xs mt-1 mb-1">or sign up with</div>
-
-                            {/* Google signup */}
-                            <button
-                                type="button"
-                                onClick={handleGoogleRegister}
-                                className="btn btn-outline w-full flex items-center gap-2"
-                            >
-                                <GoogleIcon />
-                                <span>Sign up with Google</span>
-                            </button>
-
-                            {/* Login link */}
-                            <p className="text-center text-xs md:text-sm text-base-content/70 pt-2">
-                                Already have an account?{" "}
-                                <Link to="/login" className="link link-primary">
-                                    Log in
-                                </Link>
-                            </p>
+                <div className="mx-auto w-full max-w-md">
+                    <div className="rounded-3xl p-8 shadow-2xl border border-base-300 bg-base-100/80 backdrop-blur-sm">
+                        <div className="mb-4 text-center">
+                            <h2 className="text-2xl font-bold text-base-content">Create account</h2>
+                            <p className="text-sm text-base-content/70">Join ContestHub to start participating</p>
                         </div>
+
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                            <div>
+                                <label className="text-xs text-base-content/70">Full name</label>
+                                <input type="text" placeholder="Enter your full name" className="input input-lg input-bordered w-full mt-2" {...register("name", { required: "Name is required" })} />
+                                {errors.name && <p className="text-xs text-error mt-1">{errors.name.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-base-content/70">Photo URL</label>
+                                <input type="text" placeholder="https://your-photo-link.com/image.jpg" className="input input-lg input-bordered w-full mt-2" {...register("photoURL", { required: "Photo URL is required", pattern: { value: /^(ftp|http|https):\/\/[^ \" ]+$/, message: "Invalid URL format" } })} />
+                                {errors.photoURL && <p className="text-xs text-error mt-1">{errors.photoURL.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-base-content/70">Email address</label>
+                                <input type="email" placeholder="you@example.com" className="input input-lg input-bordered w-full mt-2" {...register("email", { required: "Email is required", pattern: { value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message: "Invalid email address" } })} />
+                                {errors.email && <p className="text-xs text-error mt-1">{errors.email.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-base-content/70">Password</label>
+                                <input type="password" placeholder="Create a strong password" className="input input-lg input-bordered w-full mt-2" {...register("password", { required: "Password is required", minLength: { value: 6, message: "Password must be at least 6 characters" }, validate: { hasUppercase: (value) => /[A-Z]/.test(value) || "Password must contain at least one uppercase letter", hasNumber: (value) => /\d/.test(value) || "Password must contain at least one number", hasSpecialChar: (value) => /[!@#$%^&*(),.?\":{}|<>]/.test(value) || "Password must contain at least one special character", }, })} />
+                                {errors.password && <p className="text-xs text-error mt-1">{errors.password.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-base-content/70">Confirm password</label>
+                                <input type="password" placeholder="Re-enter your password" className="input input-lg input-bordered w-full mt-2" {...register("confirmPassword", { required: "Please confirm your password", validate: (value) => value === passwordValue || "Passwords do not match" })} />
+                                {errors.confirmPassword && <p className="text-xs text-error mt-1">{errors.confirmPassword.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-base-content/70">How do you plan to use ContestHub?</label>
+                                <div className="grid gap-2 mt-2">
+                                    <label className="flex items-start gap-2 cursor-pointer">
+                                        <input type="radio" value="user" className="radio radio-primary mt-1" {...register("rolePreference")} defaultChecked />
+                                        <div>
+                                            <p className="text-sm text-base-content/80 font-medium">Join contests as a participant</p>
+                                            <p className="text-xs text-base-content/60">Pay entry fees, submit tasks, and grow your win history.</p>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex items-start gap-2 cursor-pointer">
+                                        <input type="radio" value="creator" className="radio radio-secondary mt-1" {...register("rolePreference")} />
+                                        <div>
+                                            <p className="text-sm text-base-content/80 font-medium">Host contests as a creator</p>
+                                            <p className="text-xs text-base-content/60">Propose contests and, once approved by an admin, manage submissions and winners.</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" className="btn btn-primary btn-block rounded-lg h-12" disabled={isSubmitting}>{isSubmitting ? <span className="loading loading-spinner loading-sm"></span> : "Create account"}</button>
+                        </form>
+
+                        <div className="divider my-4">or sign up with</div>
+
+                        <button type="button" onClick={handleGoogleRegister} className="btn btn-outline w-full flex items-center justify-center gap-3 rounded-lg h-12">
+                            <GoogleIcon />
+                            <span>Continue with Google</span>
+                        </button>
+
+                        <p className="text-center text-sm text-base-content/70 mt-4">Already have an account? <Link to="/login" className="link link-primary">Log in</Link></p>
                     </div>
                 </div>
             </div>

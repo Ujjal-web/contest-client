@@ -23,26 +23,26 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section className="py-12">
+    <section className="py-12 bg-base-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-2">What Our Users Say</h2>
-        <p className="text-center text-gray-600 mb-8">
+        <h2 className="text-3xl font-bold text-center mb-2 text-base-content">What Our Users Say</h2>
+        <p className="text-center text-base-content/70 mb-8">
           Testimonials from our happy users.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-md">
+            <div key={index} className="bg-base-100 p-6 rounded-lg shadow-md border border-base-300">
               <div className="flex items-center mb-4">
                 <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full mr-4" />
                 <div>
-                  <h3 className="text-lg font-semibold">{testimonial.name}</h3>
-                  <p className="text-gray-600">{testimonial.role}</p>
+                  <h3 className="text-lg font-semibold text-base-content">{testimonial.name}</h3>
+                  <p className="text-base-content/70">{testimonial.role}</p>
                 </div>
               </div>
-              <p className="text-gray-700 mb-4">"{testimonial.quote}"</p>
+              <p className="text-base-content mb-4">"{testimonial.quote}"</p>
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={20} className="text-yellow-500 fill-current" />
+                  <Star key={i} size={20} className="text-yellow-400 fill-current" />
                 ))}
               </div>
             </div>

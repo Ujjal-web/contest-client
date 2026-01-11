@@ -83,145 +83,98 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-140px)] flex items-center justify-center">
-            <div className="grid w-full max-w-5xl gap-8 md:grid-cols-2 items-center">
-                {/* Left: roles explanation */}
-                <div className="hidden md:flex flex-col gap-5">
-                    <h1 className="text-3xl lg:text-4xl font-black text-base-content">
-                        Log in to ContestHub
-                    </h1>
-                    <p className="text-sm text-base-content/70">
-                        Your dashboard looks different depending on your role. Admins review
-                        contests and manage users, creators launch new challenges, and
-                        participants join contests and track their wins.
+        <div className="min-h-[calc(100vh-140px)] flex items-center justify-center px-4">
+            <div className="w-full max-w-5xl bg-transparent grid gap-8 md:grid-cols-2 items-center">
+                {/* Left: illustration / pitch */}
+                <div className="hidden md:flex flex-col justify-center gap-6 p-8 rounded-3xl bg-gradient-to-br from-primary/10 to-secondary/6 border border-base-200">
+                    <h1 className="text-4xl font-extrabold text-base-content">Welcome to ContestHub</h1>
+                    <p className="text-base text-base-content/70 max-w-lg">
+                        Role-based dashboards for Admins, Contest Creators, and Participants —
+                        manage contests, submit designs and win prizes. Secure, modern, and community-driven.
                     </p>
 
-                    <div className="grid gap-3 text-sm">
-                        <RoleCard
-                            title="Admin"
-                            description="Approve or reject contests, manage user roles, and keep the platform safe and organized."
-                            accent="badge-error"
-                        />
-                        <RoleCard
-                            title="Contest Creator"
-                            description="Publish contests, edit details before approval, and declare winners after the deadline."
-                            accent="badge-primary"
-                        />
-                        <RoleCard
-                            title="Participant"
-                            description="Join contests after payment, submit your work, and see your participated and winning contests."
-                            accent="badge-success"
-                        />
+                    <div className="grid gap-3">
+                        <div className="flex items-start gap-3">
+                            <span className="badge badge-error">Admin</span>
+                            <div>
+                                <p className="text-sm font-semibold text-base-content">Platform management</p>
+                                <p className="text-xs text-base-content/70">Approve contests and manage users.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                            <span className="badge badge-primary">Creator</span>
+                            <div>
+                                <p className="text-sm font-semibold text-base-content">Host contests</p>
+                                <p className="text-xs text-base-content/70">Create contests and review submissions.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                            <span className="badge badge-success">Participant</span>
+                            <div>
+                                <p className="text-sm font-semibold text-base-content">Join & win</p>
+                                <p className="text-xs text-base-content/70">Pay entry fees, submit your work, and track wins.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Right: login card */}
-                <div className="w-full max-w-md mx-auto">
-                    <div className="card bg-base-100 shadow-xl border border-base-300">
-                        <div className="card-body space-y-4">
-                            <h2 className="text-2xl font-bold text-center text-base-content">
-                                Welcome back
-                            </h2>
-                            <p className="text-center text-xs text-base-content/70">
-                                Use your ContestHub account to access your role-based dashboard.
-                            </p>
-
-                            {/* Email / Password form */}
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-                                {/* Email */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">Email address</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                Use the same email you registered as admin, creator, or
-                                                participant.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="email"
-                                        placeholder="you@example.com"
-                                        className="input input-bordered"
-                                        {...register("email", {
-                                            required: "Email is required",
-                                            pattern: {
-                                                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                                message: "Invalid email address",
-                                            },
-                                        })}
-                                    />
-                                    {errors.email && (
-                                        <p className="text-xs text-error mt-1">
-                                            {errors.email.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* Password */}
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text text-sm leading-tight">
-                                            <span className="block">Password</span>
-                                            <span className="block text-xs text-base-content/60">
-                                                This is the password you set when you created your
-                                                account.
-                                            </span>
-                                        </span>
-                                    </label>
-                                    <input
-                                        type="password"
-                                        placeholder="Enter your password"
-                                        className="input input-bordered"
-                                        {...register("password", {
-                                            required: "Password is required",
-                                            minLength: {
-                                                value: 6,
-                                                message: "Password must be at least 6 characters",
-                                            },
-                                        })}
-                                    />
-                                    {errors.password && (
-                                        <p className="text-xs text-error mt-1">
-                                            {errors.password.message}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary w-full mt-2"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? (
-                                        <span className="loading loading-spinner loading-sm"></span>
-                                    ) : (
-                                        "Login"
-                                    )}
-                                </button>
-                            </form>
-
-                            {/* Divider */}
-                            <div className="divider text-xs mt-1 mb-1">or continue with</div>
-
-                            {/* Google login */}
-                            <button
-                                type="button"
-                                onClick={handleGoogleLogin}
-                                className="btn btn-outline w-full flex items-center gap-2"
-                            >
-                                <GoogleIcon />
-                                <span>Login with Google</span>
-                            </button>
-
-                            {/* Register link */}
-                            <p className="text-center text-xs md:text-sm text-base-content/70 pt-2">
-                                New to ContestHub?{" "}
-                                <Link to="/register" className="link link-primary">
-                                    Create an account
-                                </Link>
-                            </p>
+                {/* Right: modern login card */}
+                <div className="mx-auto w-full max-w-md">
+                    <div className="rounded-3xl p-8 shadow-2xl border border-base-300 bg-base-100/80 backdrop-blur-sm">
+                        <div className="mb-4 text-center">
+                            <h2 className="text-2xl font-bold text-base-content">Welcome back</h2>
+                            <p className="text-sm text-base-content/70">Sign in to continue to your dashboard</p>
                         </div>
+
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                            <div>
+                                <label className="text-xs text-base-content/70">Email address</label>
+                                <input
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    className="input input-lg input-bordered w-full mt-2"
+                                    {...register("email", {
+                                        required: "Email is required",
+                                        pattern: {
+                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                            message: "Invalid email address",
+                                        },
+                                    })}
+                                />
+                                {errors.email && <p className="text-xs text-error mt-1">{errors.email.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-base-content/70">Password</label>
+                                <input
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    className="input input-lg input-bordered w-full mt-2"
+                                    {...register("password", {
+                                        required: "Password is required",
+                                        minLength: { value: 6, message: "Password must be at least 6 characters" },
+                                    })}
+                                />
+                                {errors.password && <p className="text-xs text-error mt-1">{errors.password.message}</p>}
+                            </div>
+
+                            <button type="submit" className="btn btn-primary btn-block rounded-lg h-12" disabled={isSubmitting}>
+                                {isSubmitting ? <span className="loading loading-spinner loading-sm"></span> : "Sign in"}
+                            </button>
+                        </form>
+
+                        <div className="divider my-4">or continue with</div>
+
+                        <button type="button" onClick={handleGoogleLogin} className="btn btn-outline w-full flex items-center justify-center gap-3 rounded-lg h-12">
+                            <GoogleIcon />
+                            <span>Continue with Google</span>
+                        </button>
+
+                        <p className="text-center text-sm text-base-content/70 mt-4">
+                            New to ContestHub? <Link to="/register" className="link link-primary">Create an account</Link>
+                        </p>
                     </div>
                 </div>
             </div>

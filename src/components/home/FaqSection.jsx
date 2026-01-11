@@ -24,18 +24,18 @@ const FaqItem = ({ faq, index }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="border-b border-gray-200 py-4">
+    <div className="border-b border-base-300 py-4">
       <button
         className="w-full flex justify-between items-center text-left"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="text-lg font-medium">{faq.question}</span>
+        <span className="text-lg font-medium text-base-content">{faq.question}</span>
         <ChevronDown
           className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
       {isOpen && (
-        <div className="mt-4 text-gray-600">
+        <div className="mt-4 text-base-content/70">
           <p>{faq.answer}</p>
         </div>
       )}
@@ -45,10 +45,10 @@ const FaqItem = ({ faq, index }) => {
 
 const FaqSection = () => {
   return (
-    <section className="py-12">
+    <section className="py-12 bg-base-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-2">Frequently Asked Questions</h2>
-        <p className="text-center text-gray-600 mb-8">
+        <h2 className="text-3xl font-bold text-center mb-2 text-base-content">Frequently Asked Questions</h2>
+        <p className="text-center text-base-content/70 mb-8">
           Here are some of our most frequently asked questions.
         </p>
         <div className="max-w-3xl mx-auto">
